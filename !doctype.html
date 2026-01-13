@@ -1,0 +1,1043 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Happy Birthday MAISHA — From Arafat Rahaman</title>
+  <style>
+    :root{
+      --accent: #ff0066;       /* vivid magenta */
+      --accent-2: #6a00ff;     /* deep purple */
+      --glass: rgba(255,255,255,0.12);
+      --card-bg: rgba(255,255,255,0.9);
+      --text: #1b1464;         /* deep indigo (colorful, not light/white) */
+      --muted: #243b55;        /* dark teal/blue muted */
+      --btn-text: #6a00ff;     /* deep purple for buttons */
+      --shadow: 0 10px 30px rgba(0,0,0,0.18);
+      font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+
+    /* Page container and navigation */
+    html,body{height:100%;margin:0;background:#111;}
+    .app{
+      height:100vh;
+      overflow:hidden;
+      position:relative;
+    }
+    .pages{
+      height:100%;
+      transition: transform 700ms cubic-bezier(.2,.9,.25,1);
+      will-change: transform;
+    }
+    .page{
+      height:100vh;
+      width:100%;
+      position:relative;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:var(--text);
+      background-size:cover;
+      background-position:center;
+      background-repeat:no-repeat;
+      /* image is MAISHA's picture; replace with real path maisha.jpg */
+    }
+    /* Dark overlay to make content readable */
+    .page::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(180deg, rgba(0,0,0,0.22), rgba(0,0,0,0.44));
+      pointer-events:none;
+    }
+
+    /* Reusable card */
+    .card{
+      position:relative;
+      z-index:5;
+      width:min(920px, 94%);
+      max-width:1080px;
+      margin:20px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,255,255,0.86));
+      border-radius:18px;
+      padding:28px;
+      box-shadow:var(--shadow);
+      display:flex;
+      gap:18px;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      color:var(--muted);
+    }
+    /* Colorful headings (no white or very light colors) */
+    h1,h2,h3{
+      margin:0 0 8px 0;
+      line-height:1.05;
+      background: linear-gradient(90deg, #ff0066, #ff8c00, #6a00ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      color: transparent;
+    }
+    p{margin:0 0 8px 0; color:var(--muted)}
+    li{ color:var(--muted) }
+
+    /* Controls */
+    .controls{
+      position:fixed;
+      right:18px;
+      bottom:18px;
+      z-index:60;
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+    .btn{
+      background:var(--glass);
+      border:1px solid rgba(255,255,255,0.08);
+      color:var(--btn-text);
+      padding:10px 14px;
+      border-radius:12px;
+      cursor:pointer;
+      backdrop-filter: blur(6px);
+      box-shadow:0 6px 18px rgba(0,0,0,0.25);
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      user-select:none;
+      font-weight:700;
+    }
+    .btn:active{transform:translateY(1px)}
+
+    /* Progress dots */
+    .dots{
+      position:fixed;
+      left:18px;
+      top:50%;
+      transform:translateY(-50%);
+      z-index:60;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .dot{
+      width:12px;height:12px;border-radius:50%;
+      background:rgba(255,255,255,0.2);
+      border:2px solid rgba(255,255,255,0.08);
+      cursor:pointer;
+    }
+    .dot.active{background:var(--accent); box-shadow:0 6px 20px rgba(255,100,120,0.14);}
+
+    /* Animated gradient background overlay */
+    .animated-bg{
+      position:absolute; inset:0; z-index:2; pointer-events:none;
+      background: linear-gradient(120deg, rgba(255,0,102,0.06), rgba(106,0,255,0.05));
+      mix-blend-mode: screen;
+      animation: drift 12s linear infinite alternate;
+      filter: blur(18px) saturate(1.1);
+    }
+    @keyframes drift{
+      from {transform: translateY(-8%) rotate(0deg) scale(1);}
+      to {transform: translateY(8%) rotate(3deg) scale(1.03);}
+    }
+
+    /* Floating bokeh / lights */
+    .bokeh{
+      position:absolute; inset:0; z-index:3; pointer-events:none;
+    }
+    .bokeh .dot{
+      position:absolute; width:18px;height:18px;border-radius:50%;
+      background: radial-gradient(circle at 40% 30%, rgba(255,255,255,0.9), rgba(255,255,255,0.1));
+      opacity:0.05; filter: blur(6px);
+      animation: floaty 10s infinite;
+    }
+    @keyframes floaty{
+      from{ transform: translateY(0) scale(1);}
+      to{ transform: translateY(-30vh) scale(1.6); }
+    }
+
+    /* Title page styling */
+    .title-card{text-align:left; padding:36px 40px;}
+    .tagline{color:var(--accent); opacity:0.98; font-weight:700}
+
+    /* Confetti canvas */
+    canvas.confetti{ position:fixed; inset:0; z-index:55; pointer-events:none; }
+
+    /* Balloon game */
+    .game-area{ position:relative; height:420px; width:100%; overflow:hidden; background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.04)); border-radius:12px; padding:12px;}
+    .balloon{
+      position:absolute; bottom:-140px; width:72px; height:100px; border-radius:50% 50% 50% 50%;
+      display:flex; align-items:flex-end; justify-content:center; cursor:pointer; transition: transform .12s ease;
+      box-shadow:0 6px 18px rgba(0,0,0,0.18);
+    }
+    .balloon:active{ transform: scale(.96) translateY(6px) }
+    .balloon .string{ width:2px; height:90px; background: rgba(255,255,255,0.25); position:absolute; bottom:-86px; left:50%; transform:translateX(-50%); }
+    .pop{ animation: pop 400ms ease forwards; }
+    @keyframes pop{
+      to { transform: scale(0.1) rotate(45deg); opacity:0; }
+    }
+
+    /* Candle */
+    .candle-wrap{ display:flex; gap:20px; align-items:center; }
+    .candle{
+      width:120px; height:220px; position:relative; display:flex; align-items:center; justify-content:center;
+    }
+    .candle .body{
+      width:72px; height:160px; background: linear-gradient(180deg, #fff 0%, #ffdede 60%);
+      border-radius:10px; box-shadow: inset 0 -8px 20px rgba(0,0,0,0.06);
+      position:relative; z-index:2;
+    }
+    .wax-drip{ position:absolute; top:12px; left:46%; width:8px; height:28px; background:#ffefef; border-radius:6px; transform:rotate(8deg); }
+    .flame{
+      position:absolute; top:-18px; width:28px; height:48px; z-index:4;
+      transform-origin:50% 90%;
+      filter: drop-shadow(0 8px 14px rgba(255,150,120,0.25));
+      transition: opacity 300ms ease, transform 300ms ease;
+    }
+    .flame svg{ width:100%; height:100%; display:block; }
+    .flame.flicker{ animation: flick 420ms infinite; }
+    @keyframes flick{
+      0%{ transform: translateY(0) scale(1); opacity:1; }
+      50%{ transform: translateY(-2px) scale(1.03); opacity:0.95; }
+      100%{ transform: translateY(0) scale(1); opacity:1; }
+    }
+    .flame.out{ opacity:0; transform: scale(.6) translateY(-10px); }
+
+    /* Music control */
+    .music-control{ display:flex; gap:8px; align-items:center;}
+
+    /* Questions */
+    .question-list{ display:flex; flex-direction:column; gap:12px; width:100%; }
+    .qcard{ background:rgba(255,255,255,0.98); padding:12px 16px; border-radius:10px; box-shadow:0 6px 18px rgba(0,0,0,0.06); color:var(--muted) }
+    .qcard label{ display:block; margin:8px 0; cursor:pointer; padding:8px; border-radius:8px; transition: background 170ms; color:var(--muted) }
+    .qcard input[type="radio"]{ margin-right:10px; }
+
+    /* Letter page */
+    .letter{
+      max-width:840px;
+      margin:30px auto;
+      background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.96));
+      border-radius:12px;
+      padding:34px;
+      box-shadow:var(--shadow);
+      line-height:1.6;
+      color:var(--muted);
+    }
+    .signature{ margin-top:28px; text-align:right; font-weight:800; color:var(--accent-2); font-size:18px; }
+
+    /* Responsive */
+    @media (max-width:720px){
+      .card{ padding:18px; border-radius:14px; }
+      .title-card h1{ font-size:32px; text-align:center }
+      .dots{ display:none; }
+      .controls{ left:12px; right:auto; bottom:12px }
+    }
+
+    /* Small helpers to ensure any inline white text is overridden */
+    .title-card * { color: inherit; }
+    .card img { border-color: rgba(0,0,0,0.06); }
+  </style>
+</head>
+<body>
+  <div class="app" id="app">
+    <!-- confetti canvas -->
+    <canvas class="confetti" id="confettiCanvas"></canvas>
+
+    <!-- Pages wrapper -->
+    <div class="pages" id="pages">
+
+      <!-- Page 1: Title / Welcome -->
+      <section class="page" style="background-image: url('images/maisha.jpg');">
+        <div class="animated-bg"></div>
+        <div class="bokeh" aria-hidden="true">
+          <div class="dot" style="left:10%; bottom:20%; width:36px;height:36px; opacity:0.06; animation-duration:14s;"></div>
+          <div class="dot" style="left:78%; bottom:5%; width:54px;height:54px; opacity:0.04; animation-duration:11s;"></div>
+          <div class="dot" style="left:46%; bottom:10%; width:72px;height:72px; opacity:0.03; animation-duration:12s;"></div>
+        </div>
+
+        <div class="card title-card" role="region" aria-label="Happy Birthday Title">
+          <div style="flex:1;">
+            <h1>Happy Birthday, MAISHA! 🎉</h1>
+            <p class="tagline">A special surprise for you — swipe or click Next to go through your birthday story.</p>
+            <p style="opacity:.95; margin-top:12px; color:var(--muted)">From: <strong style="color:var(--accent)">Arafat Rahaman</strong></p>
+            <div style="margin-top:14px; display:flex; gap:10px; align-items:center;">
+              <button class="btn" onclick="startMusic()"><span>▶ Play Music</span></button>
+              <button class="btn" onclick="showNext()"><span>Next</span></button>
+            </div>
+          </div>
+
+          <div style="width:320px; text-align:center;">
+            <img src="images/maisha.jpg" alt="Maisha" style="width:220px;height:220px;border-radius:14px;object-fit:cover;border:6px solid rgba(255,255,255,0.12);box-shadow:0 14px 40px rgba(0,0,0,0.45)"/>
+          </div>
+        </div>
+      </section>
+
+      <!-- Page 2: Animated background + Fun facts -->
+      <section class="page" style="background-image: url('images/maisha.jpg');">
+        <div class="animated-bg"></div>
+
+        <div class="card" role="region" aria-label="Fun facts about Maisha">
+          <div style="flex:1;">
+            <h2>10 Reasons We Love MAISHA</h2>
+            <ul style="margin:12px 0 0 18px;">
+              <li>Her laughter lights up every room.</li>
+              <li>She cares deeply for friends and family.</li>
+              <li>Always curious and adventurous.</li>
+              <li>She makes the best memories.</li>
+              <li>Her kindness is contagious.</li>
+            </ul>
+          </div>
+          <div style="width:340px; text-align:center">
+            <div style="background:rgba(255,255,255,0.96); padding:14px; border-radius:12px;">
+              <h3 style="margin-bottom:6px">Spin the wheel!</h3>
+              <canvas id="wheel" width="280" height="280" style="border-radius:50%"></canvas>
+              <div style="margin-top:10px;">
+                <button class="btn" onclick="spinWheel()">Spin</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Page 3: Balloon pop mini-game -->
+      <section class="page" style="background-image: url('images/maisha.jpg');">
+        <div class="animated-bg"></div>
+
+        <div class="card" role="region" aria-label="Balloon pop game">
+          <div style="flex:1">
+            <h2>Balloon Pop — pop as many as you can!</h2>
+            <p>Click or tap balloons to pop them. Get combos for bonus confetti!</p>
+
+            <div class="game-area" id="gameArea" aria-live="polite">
+              <!-- ballots will be injected here -->
+            </div>
+
+            <div style="display:flex; gap:12px; margin-top:12px; align-items:center;">
+              <div style="color:var(--muted)">Score: <strong id="score">0</strong></div>
+              <button class="btn" onclick="startBalloons()">Start Game</button>
+              <button class="btn" onclick="stopBalloons()">Stop</button>
+            </div>
+          </div>
+
+          <div style="width:300px; text-align:center;">
+            <img src="images/maisha.jpg" alt="Maisha" style="width:220px;height:220px;border-radius:12px;object-fit:cover; border:6px solid rgba(255,255,255,0.12)"/>
+          </div>
+        </div>
+      </section>
+
+      <!-- Page 4: Cute interactive questions -->
+      <section class="page" style="background-image: url('images/maisha.jpg');">
+        <div class="animated-bg"></div>
+
+        <div class="card" role="region" aria-label="Cute questions">
+          <div style="flex:1">
+            <h2>A few cute questions — for fun 💌</h2>
+
+            <form id="cuteQuiz" class="question-list" onsubmit="return false;">
+              <div class="qcard">
+                <div><strong>1. What is MAISHA's favorite treat?</strong></div>
+                <label><input type="radio" name="q1" value="cake" checked/> Cake 🎂</label>
+                <label><input type="radio" name="q1" value="icecream" /> Ice cream 🍨</label>
+                <label><input type="radio" name="q1" value="chocolate" /> Chocolate 🍫</label>
+              </div>
+
+              <div class="qcard">
+                <div><strong>2. A perfect day includes:</strong></div>
+                <label><input type="radio" name="q2" value="adventure" /> Adventure ✈️</label>
+                <label><input type="radio" name="q2" value="cozy" checked/> Cozy morning & books ☕📚</label>
+                <label><input type="radio" name="q2" value="party" /> Party with friends 🎉</label>
+              </div>
+
+              <div class="qcard">
+                <div><strong>3. Choose a little surprise:</strong></div>
+                <label><input type="radio" name="q3" value="flowers" /> Flowers 🌷</label>
+                <label><input type="radio" name="q3" value="song" checked/> Song 🎵</label>
+                <label><input type="radio" name="q3" value="letter" /> Handwritten letter ✉️</label>
+              </div>
+
+              <div style="display:flex; gap:10px; margin-top:8px;">
+                <button class="btn" onclick="submitCuteQuiz()">See my answers</button>
+                <button class="btn" onclick="showNext()">Next</button>
+              </div>
+              <div id="quizResult" style="margin-top:10px; color:var(--muted)"></div>
+            </form>
+          </div>
+
+          <div style="width:300px;text-align:center;">
+            <div style="background: linear-gradient(180deg,#fff,#ffe); padding:18px; border-radius:12px;">
+              <h3 style="margin-bottom:6px">Your choices will surprise MAISHA!</h3>
+              <p style="opacity:.9; color:var(--muted)">Tip: Hit Play Music on the top of the page to enjoy a birthday tune while you play.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Page 5: Memory tile mini-game (matching) -->
+      <section class="page" style="background-image: url('images/maisha.jpg');">
+        <div class="animated-bg"></div>
+
+        <div class="card" role="region" aria-label="Memory mini-game">
+          <div style="flex:1">
+            <h2>Memory Match — find pairs!</h2>
+            <p>Flip tiles to find matching pairs. Try to finish quickly!</p>
+            <div id="memory" style="display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:12px;"></div>
+            <div style="display:flex; gap:12px; margin-top:12px; align-items:center;">
+              <button class="btn" onclick="startMemory()">Start</button>
+              <div style="color:var(--muted)">Moves: <strong id="moves">0</strong></div>
+            </div>
+          </div>
+
+          <div style="width:320px; text-align:center;">
+            <img src="images/maisha.jpg" alt="Maisha" style="width:220px;height:220px;border-radius:12px;object-fit:cover;" />
+          </div>
+        </div>
+      </section>
+
+      <!-- Page 6: Candle blow -->
+      <section class="page" style="background-image: url('images/maisha.jpg');">
+        <div class="animated-bg"></div>
+
+        <div class="card" role="region" aria-label="Blow the candle">
+          <div style="flex:1">
+            <h2>Make a wish — blow the candle out!</h2>
+            <p>Click "Blow" or blow into your microphone (if prompted) to extinguish the flame.</p>
+
+            <div class="candle-wrap" style="margin-top:16px;">
+              <div class="candle" id="candle">
+                <div class="flame flicker" id="flame" title="Candle flame">
+                  <!-- simple flame SVG -->
+                  <svg viewBox="0 0 64 120" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+                    <defs>
+                      <linearGradient id="g1" x1="0" x2="0" y1="0" y2="1">
+                        <stop offset="0%" stop-color="#ffd57a"/>
+                        <stop offset="60%" stop-color="#ff8c6b"/>
+                        <stop offset="100%" stop-color="#ff6b81"/>
+                      </linearGradient>
+                      <filter id="glow">
+                        <feGaussianBlur stdDeviation="6" result="blur"/>
+                        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                      </filter>
+                    </defs>
+                    <g filter="url(#glow)">
+                      <path d="M32 2 C28 22, 10 40, 18 66 C26 92, 32 104, 32 104 C32 104, 38 92, 46 66 C54 40, 36 22, 32 2 Z" fill="url(#g1)"/>
+                    </g>
+                  </svg>
+                </div>
+
+                <div class="body" aria-hidden="true">
+                  <div class="wax-drip"></div>
+                </div>
+                <div class="string" aria-hidden="true" style="display:none"></div>
+              </div>
+
+              <div style="display:flex; flex-direction:column; gap:10px;">
+                <button class="btn" onclick="blowCandle()">Blow</button>
+                <button class="btn" onclick="resetCandle()">Relight</button>
+                <div style="font-size:13px; color:var(--muted)">Wishes remaining: <strong id="wishes">1</strong></div>
+              </div>
+            </div>
+
+            <div style="margin-top:12px; color:var(--muted)">(If you allow mic access, you can blow into the mic to extinguish the flame — permission required.)</div>
+          </div>
+
+          <div style="width:300px; text-align:center;">
+            <img src="images/maisha.jpg" alt="" style="width:220px;height:220px;border-radius:12px;object-fit:cover;" />
+          </div>
+        </div>
+      </section>
+
+      <!-- Page 7: Mini interactive puzzle / simple slider of memories -->
+      <section class="page" style="background-image: url('images/maisha.jpg');">
+        <div class="animated-bg"></div>
+
+        <div class="card" role="region" aria-label="Memories slideshow">
+          <div style="flex:1">
+            <h2>Little Memories</h2>
+            <p>Slide through a few cherished memories.</p>
+            <div id="memSlider" style="display:flex; gap:10px; overflow:hidden; margin-top:12px;">
+              <div style="min-width:220px; background:#fff; border-radius:12px; padding:10px;">
+                <img src="images/maisha-1.jpg" alt="Memory 1" style="width:100%; height:140px; object-fit:cover; border-radius:8px"/>
+                <p style="margin-top:8px; color:var(--muted)"><strong>Picnic day</strong></p>
+              </div>
+              <div style="min-width:220px; background:#fff; border-radius:12px; padding:10px;">
+                <img src="images/maisha-2.jpg" alt="Memory 2" style="width:100%; height:140px; object-fit:cover; border-radius:8px"/>
+                <p style="margin-top:8px; color:var(--muted)"><strong>Laughs</strong></p>
+              </div>
+              <div style="min-width:220px; background:#fff; border-radius:12px; padding:10px;">
+                <img src="images/maisha-3.jpg" alt="Memory 3" style="width:100%; height:140px; object-fit:cover; border-radius:8px"/>
+                <p style="margin-top:8px; color:var(--muted)"><strong>Cake moment</strong></p>
+              </div>
+            </div>
+
+            <div style="display:flex; gap:8px; margin-top:12px;">
+              <button class="btn" onclick="slideMem(-1)">‹</button>
+              <button class="btn" onclick="slideMem(1)">›</button>
+              <button class="btn" onclick="shuffleMem()">Shuffle</button>
+            </div>
+          </div>
+
+          <div style="width:300px; text-align:center;">
+            <div style="background: rgba(255,255,255,0.96); padding:16px; border-radius:12px;">
+              <h3 style="margin:0">A few favorites</h3>
+              <p style="margin-top:6px; color:var(--muted)">Swipe to visit small memories — keep them forever.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Page 8: Little quiz - fun facts about the day -->
+      <section class="page" style="background-image: url('images/maisha.jpg');">
+        <div class="animated-bg"></div>
+
+        <div class="card" role="region" aria-label="Fun small quiz">
+          <div style="flex:1">
+            <h2>Mini Quiz — How well do you know MAISHA?</h2>
+            <p>Pick answers and check score.</p>
+
+            <div class="question-list" style="margin-top:12px;">
+              <div class="qcard">
+                <div><strong>Favorite color?</strong></div>
+                <select id="favColor" style="padding:8px; margin-top:8px;">
+                  <option value="pink">Pink</option>
+                  <option value="blue">Blue</option>
+                  <option value="green">Green</option>
+                </select>
+              </div>
+
+              <div style="margin-top:12px;">
+                <button class="btn" onclick="checkMiniQuiz()">Check Score</button>
+                <div id="miniQuizResult" style="margin-top:10px; color:var(--muted)"></div>
+              </div>
+            </div>
+          </div>
+
+          <div style="width:300px; text-align:center;">
+            <img src="images/maisha.jpg" alt="Maisha" style="width:220px;height:220px;border-radius:12px;object-fit:cover;" />
+          </div>
+        </div>
+      </section>
+
+      <!-- Page 9: Relaxing animation + wishes -->
+      <section class="page" style="background-image: url('images/maisha.jpg');">
+        <div class="animated-bg"></div>
+
+        <div class="card" role="region" aria-label="Wishes board">
+          <div style="flex:1">
+            <h2>Write a Short Wish</h2>
+            <p>Type a small wish for MAISHA — it will float up as a heart.</p>
+            <div style="display:flex; gap:10px; margin-top:10px; align-items:center;">
+              <input id="wishText" placeholder="Happy Birthday, MAISHA..." style="flex:1; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,0.06)"/>
+              <button class="btn" onclick="sendWish()">Send</button>
+            </div>
+            <div id="hearts" style="position:relative; height:220px; margin-top:14px; overflow:hidden;"></div>
+          </div>
+
+          <div style="width:300px; text-align:center;">
+            <div style="background:#fff; padding:16px; border-radius:12px;">
+              <h3 style="margin-bottom:6px">Feel the love</h3>
+              <p style="margin-top:6px; color:var(--muted)">Wishes float up like tiny hearts — add yours.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Page 10: The letter page (final) -->
+      <section class="page" style="background-image: url('images/maisha.jpg');">
+        <div class="animated-bg"></div>
+
+        <div class="card" role="region" aria-label="Final letter">
+          <div style="flex:1">
+            <h2>A Letter to MAISHA</h2>
+
+            <div class="letter" id="finalLetter">
+              <p>Dear MAISHA,</p>
+
+              <p>Today I celebrate you — your smile, your kindness, and the countless little ways you make the world brighter. Every laugh we've shared, each memory we've made, and every late-night conversation has made me grateful that you exist in my life.</p>
+
+              <p>On your birthday, I wish you the courage to chase your biggest dreams, the patience to enjoy every small moment, and endless reasons to smile. May this year bring you new adventures, closer friendships, and the kind of love that warms your heart every single day.</p>
+
+              <p>Always remember: you are loved beyond words, and I am cheering for you — today, tomorrow, and always.</p>
+
+              <div class="signature">With all my love,<br>Arafat Rahaman</div>
+            </div>
+
+            <div style="margin-top:14px; display:flex; gap:8px;">
+              <button class="btn" onclick="celebrateFinal()">Celebrate 🎉</button>
+              <button class="btn" onclick="shareLetter()">Share</button>
+            </div>
+          </div>
+
+          <div style="width:300px; text-align:center;">
+            <img src="images/maisha.jpg" alt="Maisha" style="width:220px;height:220px;border-radius:12px;object-fit:cover;" />
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Progress dots -->
+    <div class="dots" id="dots" aria-hidden="true"></div>
+
+    <!-- Controls -->
+    <div class="controls" aria-hidden="true">
+      <div class="music-control">
+        <button class="btn" id="playBtn" onclick="toggleMusic()">Play</button>
+      </div>
+      <button class="btn" onclick="showPrev()">Prev</button>
+      <button class="btn" onclick="showNext()">Next</button>
+    </div>
+
+    <!-- Hidden audio -->
+    <audio id="bgMusic" loop preload="auto">
+      <!-- Replace with actual path to a small birthday tune -->
+      <source src="audio/birthday_song.mp3" type="audio/mpeg">
+      Your browser does not support audio autoplay.
+    </audio>
+
+    <!-- Blow sound -->
+    <audio id="blowSnd" preload="auto">
+      <source src="audio/blow.mp3" type="audio/mpeg">
+    </audio>
+
+  </div>
+
+  <script>
+    /* ---------- Basic page navigation ---------- */
+    const pagesEl = document.getElementById('pages');
+    const pageCount = pagesEl.children.length;
+    let pageIndex = 0;
+    const dotsEl = document.getElementById('dots');
+
+    function initDots(){
+      for(let i=0;i<pageCount;i++){
+        const d = document.createElement('div');
+        d.className='dot' + (i===0? ' active':'');
+        d.onclick = ()=>{goTo(i)};
+        dotsEl.appendChild(d);
+      }
+    }
+    initDots();
+
+    function updateDots(){
+      [...dotsEl.children].forEach((n,i)=> n.classList.toggle('active', i===pageIndex));
+    }
+
+    function goTo(i){
+      pageIndex = Math.max(0, Math.min(pageCount-1, i));
+      pagesEl.style.transform = `translateY(-${pageIndex * 100}vh)`;
+      updateDots();
+    }
+    function showNext(){ goTo(pageIndex+1) }
+    function showPrev(){ goTo(pageIndex-1) }
+
+    // keyboard navigation
+    window.addEventListener('keydown', (e)=>{
+      if(e.key === 'ArrowDown' || e.key === 'PageDown') showNext();
+      if(e.key === 'ArrowUp' || e.key === 'PageUp') showPrev();
+    });
+
+    /* ---------- Confetti (for celebrations) ---------- */
+    const confettiCanvas = document.getElementById('confettiCanvas');
+    const cctx = confettiCanvas.getContext('2d');
+    function fitCanvas(){
+      confettiCanvas.width = innerWidth;
+      confettiCanvas.height = innerHeight;
+    }
+    fitCanvas(); window.addEventListener('resize', fitCanvas);
+
+    const confPieces = [];
+    function spawnConfetti(x=innerWidth/2, y=innerHeight/3, count=80){
+      for(let i=0;i<count;i++){
+        confPieces.push({
+          x: x + (Math.random()-0.5)*200,
+          y: y + (Math.random()-0.5)*40,
+          vx: (Math.random()-0.5)*6,
+          vy: Math.random()*-8 - 2,
+          size: Math.random()*8 + 6,
+          color: ['#ff0066','#ff8c00','#6a00ff','#00796b','#ff3d00'][Math.floor(Math.random()*5)],
+          rot: Math.random()*Math.PI*2,
+          vr: (Math.random()-0.5)*0.2,
+          life: 0
+        });
+      }
+    }
+    function confettiLoop(){
+      cctx.clearRect(0,0,confettiCanvas.width, confettiCanvas.height);
+      for(let i=confPieces.length-1;i>=0;i--){
+        const p = confPieces[i];
+        p.vy += 0.18;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.rot += p.vr;
+        p.life++;
+        cctx.save();
+        cctx.translate(p.x,p.y);
+        cctx.rotate(p.rot);
+        cctx.fillStyle = p.color;
+        cctx.fillRect(-p.size/2, -p.size/2, p.size, p.size*0.6);
+        cctx.restore();
+        if(p.y > confettiCanvas.height + 40 || p.life > 300) confPieces.splice(i,1);
+      }
+      requestAnimationFrame(confettiLoop);
+    }
+    confettiLoop();
+
+    /* ---------- Wheel (page 2) ---------- */
+    const wheel = document.getElementById('wheel');
+    if(wheel){
+      const ctx = wheel.getContext('2d');
+      const items = ['More cake','Hug','Dance','Song','Surprise','Smile','Wish','Selfie'];
+      const arc = Math.PI*2 / items.length;
+      function drawWheel(rotation=0){
+        ctx.clearRect(0,0,wheel.width,wheel.height);
+        const cx = wheel.width/2, cy = wheel.height/2, r = wheel.width/2 - 6;
+        items.forEach((it, i)=>{
+          ctx.beginPath();
+          ctx.moveTo(cx,cy);
+          ctx.arc(cx,cy,r, i*arc + rotation, (i+1)*arc + rotation);
+          ctx.closePath();
+          ctx.fillStyle = i%2? '#fde68a' : '#ffd1e6';
+          ctx.fill();
+          ctx.save();
+          ctx.translate(cx,cy);
+          ctx.rotate(i*arc + arc/2 + rotation);
+          ctx.fillStyle='#2b2b86';
+          ctx.font='14px Poppins, sans-serif';
+          ctx.textAlign='center';
+          ctx.fillText(it, r*0.6, 6);
+          ctx.restore();
+        });
+      }
+      let wheelRot = 0;
+      drawWheel();
+
+      window.spinWheel = function(){
+        const spin = Math.random()*8 + 8;
+        const duration = 2600;
+        const start = performance.now();
+        const startRot = wheelRot;
+        function step(t){
+          const p = Math.min(1, (t-start)/duration);
+          const ease = 1 - Math.pow(1-p,3);
+          wheelRot = startRot + spin * ease;
+          drawWheel(wheelRot);
+          if(p<1) requestAnimationFrame(step);
+          else {
+            // determine item
+            const final = (wheelRot % (Math.PI*2));
+            const idx = Math.floor((Math.PI*2 - final + arc/2) / arc) % items.length;
+            spawnConfetti(innerWidth/2, innerHeight/2, 60);
+            alert("You got: " + items[(idx+items.length)%items.length]);
+          }
+        }
+        requestAnimationFrame(step);
+      }
+    }
+
+    /* ---------- Balloons game (page 3) ---------- */
+    const gameArea = document.getElementById('gameArea');
+    let balloonsTimer = null;
+    let score = 0;
+    function createBalloon(){
+      const b = document.createElement('div');
+      b.className = 'balloon';
+      b.style.left = Math.random()*85 + '%';
+      b.style.bottom = '-140px';
+      b.style.background = ['#ff0066','#ff8c00','#6a00ff','#00796b','#ff3d00'][Math.floor(Math.random()*5)];
+      b.style.width = (60 + Math.random()*40) + 'px';
+      b.style.height = (80 + Math.random()*40) + 'px';
+
+      const string = document.createElement('div');
+      string.className = 'string';
+      b.appendChild(string);
+
+      b.onclick = function(e){
+        e.stopPropagation();
+        popBalloon(b);
+      };
+
+      gameArea.appendChild(b);
+
+      // animate upward
+      const duration = 6000 + Math.random()*4000;
+      const start = performance.now();
+      function up(t){
+        const p = (t-start)/duration;
+        if(p >= 1){
+          b.remove();
+          return;
+        }
+        b.style.bottom = (-140 + p*(innerHeight + 200)) + 'px';
+        b.style.left = (parseFloat(b.style.left) + Math.sin(p*8)*0.3) + '%';
+        requestAnimationFrame(up);
+      }
+      requestAnimationFrame(up);
+    }
+    function popBalloon(b){
+      b.classList.add('pop');
+      score += 10;
+      document.getElementById('score').textContent = score;
+      spawnConfetti(b.getBoundingClientRect().left, b.getBoundingClientRect().top, 18);
+      setTimeout(()=> b.remove(), 300);
+    }
+    window.startBalloons = function(){
+      stopBalloons();
+      score = 0; document.getElementById('score').textContent = score;
+      balloonsTimer = setInterval(createBalloon, 700);
+      // create a few immediately
+      for(let i=0;i<6;i++) setTimeout(createBalloon, i*250);
+    }
+    window.stopBalloons = function(){
+      clearInterval(balloonsTimer);
+      balloonsTimer = null;
+    }
+
+    /* ---------- Memory match (page 5) ---------- */
+    const memoryEl = document.getElementById('memory');
+    let memoryTiles = [];
+    let firstTile = null;
+    let lockTiles = false;
+    let moves = 0;
+    function shuffleArray(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+    window.startMemory = function(){
+      memoryEl.innerHTML = '';
+      const images = ['🌸','🎂','🎈','🎁','🌟','🍰','🎵','💖'];
+      const pairs = shuffleArray(images.concat(images));
+      memoryTiles = [];
+      firstTile = null; lockTiles = false; moves = 0;
+      document.getElementById('moves').textContent = moves;
+
+      pairs.forEach((sym, idx)=>{
+        const tile = document.createElement('div');
+        tile.style.background = '#fff';
+        tile.style.borderRadius = '10px';
+        tile.style.height = '90px';
+        tile.style.display = 'flex';
+        tile.style.alignItems = 'center';
+        tile.style.justifyContent = 'center';
+        tile.style.fontSize = '36px';
+        tile.style.cursor = 'pointer';
+        tile.dataset.sym = sym;
+        tile.dataset.open = 'false';
+        tile.onclick = ()=> flipTile(tile);
+        memoryEl.appendChild(tile);
+        memoryTiles.push(tile);
+      });
+    }
+    function flipTile(tile){
+      if(lockTiles || tile.dataset.open === 'true') return;
+      tile.textContent = tile.dataset.sym;
+      tile.dataset.open = 'true';
+      if(!firstTile) firstTile = tile;
+      else {
+        moves++; document.getElementById('moves').textContent = moves;
+        if(firstTile.dataset.sym === tile.dataset.sym){
+          // matched
+          firstTile.style.visibility = tile.style.visibility = 'hidden';
+          firstTile = null;
+          spawnConfetti(innerWidth/2, innerHeight/2, 20);
+        } else {
+          lockTiles = true;
+          setTimeout(()=>{
+            firstTile.textContent = ''; firstTile.dataset.open='false';
+            tile.textContent=''; tile.dataset.open='false';
+            firstTile = null; lockTiles = false;
+          }, 900);
+        }
+      }
+    }
+
+    /* ---------- Candle blow functionality (page 6) ---------- */
+    const flame = document.getElementById('flame');
+    const blowSnd = document.getElementById('blowSnd');
+    let flameOut = false;
+    let wishes = 1;
+    document.getElementById('wishes').textContent = wishes;
+
+    window.blowCandle = async function(){
+      if(flameOut){ return alert('Candle already blown! Press Relight to light again.'); }
+      // play blow sound
+      try{ blowSnd.currentTime = 0; blowSnd.play().catch(()=>{}); }catch(e){}
+      flame.classList.add('out');
+      flame.classList.remove('flicker');
+      flameOut = true;
+      wishes = Math.max(0, wishes-1); document.getElementById('wishes').textContent = wishes;
+      spawnConfetti(innerWidth/2, innerHeight/3, 80);
+    }
+    window.resetCandle = function(){
+      flame.classList.remove('out');
+      flame.classList.add('flicker');
+      flameOut = false;
+      wishes = 1; document.getElementById('wishes').textContent = wishes;
+    }
+
+    // Optional mic blowing detection (experimental)
+    async function tryMicBlow(){
+      if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
+      try{
+        const stream = await navigator.mediaDevices.getUserMedia({ audio:true });
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const src = ctx.createMediaStreamSource(stream);
+        const analyser = ctx.createAnalyser();
+        analyser.fftSize = 512;
+        src.connect(analyser);
+        const data = new Uint8Array(analyser.frequencyBinCount);
+        let lastLoud = 0;
+        function analyze(){
+          analyser.getByteFrequencyData(data);
+          let sum = 0;
+          for(let i=0;i<data.length;i++) sum += data[i];
+          const vol = sum / data.length;
+          // detect a sudden loud burst -> blow
+          if(vol > 70 && vol - lastLoud > 12){
+            blowCandle();
+            // stop mic after detecting a blow
+            stream.getTracks().forEach(t=>t.stop());
+            return;
+          }
+          lastLoud = vol;
+          requestAnimationFrame(analyze);
+        }
+        analyze();
+      }catch(e){
+        // permission denied or not supported
+      }
+    }
+
+    /* ---------- Memory slider (page 7) ---------- */
+    const memSlider = document.getElementById('memSlider');
+    function slideMem(dir){
+      memSlider.scrollBy({ left: dir * 240, behavior:'smooth' });
+    }
+    function shuffleMem(){
+      const items = [...memSlider.children];
+      for(let i=items.length-1;i>0;i--){
+        const j=Math.floor(Math.random()*(i+1));
+        memSlider.appendChild(items[j]);
+        items.splice(j,1);
+      }
+    }
+
+    /* ---------- Mini quiz (page 8) ---------- */
+    window.checkMiniQuiz = function(){
+      const color = document.getElementById('favColor').value;
+      const out = document.getElementById('miniQuizResult');
+      if(color === 'pink') {
+        out.textContent = 'Correct! MAISHA loves pink 🌸';
+      } else {
+        out.textContent = 'Nice guess! She likes all happy colors — but pink is her favorite.';
+      }
+    }
+
+    /* ---------- Wishes hearts (page 9) ---------- */
+    function sendWish(){
+      const text = document.getElementById('wishText').value.trim();
+      if(!text) return;
+      const hearts = document.getElementById('hearts');
+      const h = document.createElement('div');
+      h.style.position='absolute';
+      h.style.left = (20 + Math.random()*60) + '%';
+      h.style.bottom = '0';
+      h.style.fontSize = '18px';
+      h.style.padding = '8px 10px';
+      h.style.borderRadius = '16px';
+      h.style.background = 'linear-gradient(90deg, #ff0066, #6a00ff)';
+      h.style.color = '#fff';
+      h.style.whiteSpace = 'nowrap';
+      h.style.opacity = '0';
+      h.textContent = text.length>28? text.slice(0,28)+'…' : text;
+      hearts.appendChild(h);
+      // float up
+      const dur = 4200 + Math.random()*1600;
+      const start = performance.now();
+      function rise(t){
+        const p = (t-start)/dur;
+        h.style.opacity = Math.min(1, p*2);
+        h.style.transform = `translateY(-${p*260}px) scale(${1 + p*0.05})`;
+        if(p < 1) requestAnimationFrame(rise);
+        else setTimeout(()=> h.remove(), 1500);
+      }
+      requestAnimationFrame(rise);
+      document.getElementById('wishText').value = '';
+      spawnConfetti(innerWidth/2, innerHeight/2, 20);
+    }
+
+    /* ---------- Cute quiz submit (page 4) ---------- */
+    window.submitCuteQuiz = function(){
+      const f = new FormData(document.getElementById('cuteQuiz'));
+      const a = [f.get('q1'), f.get('q2'), f.get('q3')];
+      const res = `You chose: ${a.join(' • ')} — perfect choices for MAISHA!`;
+      document.getElementById('quizResult').textContent = res;
+    }
+
+    /* ---------- Music controls ---------- */
+    const bgMusic = document.getElementById('bgMusic');
+    const playBtn = document.getElementById('playBtn');
+    let musicPlaying = false;
+    window.toggleMusic = function(){
+      if(!musicPlaying){
+        startMusic();
+      } else {
+        bgMusic.pause(); musicPlaying = false;
+        playBtn.textContent = 'Play';
+      }
+    }
+    window.startMusic = function(){
+      bgMusic.volume = 0.7;
+      bgMusic.play().catch(()=>{ /* autoplay blocked until user interacts */ });
+      musicPlaying = true; playBtn.textContent = 'Pause';
+    }
+
+    /* ---------- Final celebration ---------- */
+    window.celebrateFinal = function(){
+      spawnConfetti(innerWidth/2, innerHeight/3, 120);
+      alert('Happy Birthday MAISHA! 🎉 — Love, Arafat Rahaman');
+    }
+    window.shareLetter = function(){
+      try {
+        const txt = document.getElementById('finalLetter').innerText;
+        navigator.clipboard.writeText(txt).then(()=> alert('Letter copied to clipboard — share it with MAISHA!'));
+      } catch(e){
+        alert('Unable to copy — try selecting and copying manually.');
+      }
+    }
+
+    /* ---------- Initialization ---------- */
+    // set initial page to 0
+    goTo(0);
+
+    // Preload a few decorative bokeh dots positions
+    (function populateBokeh(){
+      const b = document.querySelectorAll('.bokeh .dot');
+      // already in DOM; nothing else needed
+    })();
+
+    // Simple accessibility: swipe up/down on touch to navigate
+    let touchStartY = null;
+    document.addEventListener('touchstart', e=> { touchStartY = e.touches[0].clientY; });
+    document.addEventListener('touchend', e=>{
+      if(touchStartY === null) return;
+      const diff = e.changedTouches[0].clientY - touchStartY;
+      if(diff < -60) showNext();
+      else if(diff > 60) showPrev();
+      touchStartY = null;
+    });
+
+    // Expose functions to window for buttons
+    window.showNext = showNext;
+    window.showPrev = showPrev;
+    window.goTo = goTo;
+
+    // Helper: ensure images exist / fallback
+    window.addEventListener('error', (ev)=>{
+      // console.log('resource error', ev);
+    }, true);
+
+    // Friendly hint: if user wants mic for blow, prompt only when they press the Blow button
+    document.querySelectorAll('.btn').forEach(b=>{
+      b.addEventListener('click', ()=>{ try{ window.focus(); }catch(e){} });
+    });
+  </script>
+</body>
+</html>
